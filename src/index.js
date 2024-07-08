@@ -1,10 +1,14 @@
-import app from "./app.js";
+import dotenv from 'dotenv'
+
+import app from "./app.js"
 
 
-const port = 3000
+dotenv.config()
+
+const port = process.env.PORT
 
 
-app.listen(port, ()=>{
+app.listen(port, () => {
 
     console.log(`El servidor se levanto en el puerto http://localhost:${port}`)
 

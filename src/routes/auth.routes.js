@@ -8,4 +8,9 @@ const router = Router()
 
 router.post('/register', register)
 
+router.get('/',(req,res)=>{
+
+    res.send("hola")
+})
+
 export default router
