@@ -1,17 +1,11 @@
 import {connection} from "../config/db.js"
-import { hashPassword, verifyPassword } from "../lib/bcryptHash.js";
 
-export const createUser = async (userData) =>{
-    const {username, mail, password} = userData
 
-    try {
-        const [row] = await connection.execute("SELECT mail FROM users WHERE mail = ?", [mail])
-        if(row.length > 0) return false
-            
+export const createUser = async (username, email, passwordHashed) =>{
+
+    try { 
         const [uuidResult] = await connection.execute('SELECT UUID() uuid;')
         const [{ uuid }] = uuidResult
-
-        const passwordHashed = await hashPassword(password)
 
         const randomPicture = Math.floor(Math.random() * 5);
         
@@ -20,16 +14,41 @@ export const createUser = async (userData) =>{
         const app_visitadaSS = JSON.stringify({ register: true });
 
         await connection.execute(
-            `INSERT INTO users (id, username, mail, password, picture, date, app_visitadas)
+            `INSERT INTO users (id, username, email, password, picture, date, app_visted)
             VALUES (UUID_TO_BIN(?), ?, ?, ?, ?, ?, ?);`,
-            [uuid, username, mail, passwordHashed, randomPicture, today, app_visitadaSS]
+            [uuid, username, email, passwordHashed, randomPicture, today, app_visitadaSS]
         );
           
         return true;     
-
     } catch (error) {
+
         console.error(error);
         throw error; 
     }
 }
 
+export const loginUser = async (email)=>{
+
+    try {
+        const [row] = await connection.execute("SELECT id, username, email, picture, date, app_visted FROM users WHERE email = ?", [email])
+        return row[0]
+
+    } catch (err) {
+
+        console.error("Error searching for user:", err);
+        throw new Error("Error searching for user");
+    }
+}
+
+
+export const findUser = async email => {
+    
+    try {
+        const [row] = await connection.execute("SELECT password FROM users WHERE email = ?", [email])
+        if(row.length > 0) return row[0]
+        
+    } catch (err) {
+        console.error("Error searching for user:", err);
+        throw new Error("Error searching for user");
+    }
+}

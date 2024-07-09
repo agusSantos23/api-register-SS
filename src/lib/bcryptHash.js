@@ -22,16 +22,14 @@ export const verifyPassword = async (password, hashedPassword) => {
         
         const match = await bcrypt.compare(password, hashedPassword)
         if (match) {
-            console.log('La password true')
             return true
         } else {
-            console.log('La password false')
             return false
         }
 
-    } catch (error) {
+    } catch (err) {
 
-        console.error('Error password verify:', error)
+        console.error("Error password verify:")
     }
 }
 
