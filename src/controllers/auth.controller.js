@@ -14,7 +14,6 @@ export const register = async (req, res) => {
 
     const passwordHashed = await hashPassword(password)
 
-
     const result = await createUser(username, email, passwordHashed)
     
     if(result){
@@ -35,7 +34,7 @@ export const register = async (req, res) => {
 
 
       res.status(201).json({
-        message: 'User create'
+        message: "User create"
       })
     }else{
       res.status(400).json({message: ['User no create']})
@@ -53,16 +52,14 @@ export const login = async (req, res) => {
 
   try{
     const userExists = await findUser(email)
-    if(!userExists) return res.status(400).json({message: ["The email not found"]})
+    if(!userExists) return res.status(400).json({message: ["Correo electronico no encontrado"]})
 
     const isMatch = await verifyPassword(password,userExists.password)
-    if(!isMatch) return res.status(400).json({message: ["Incorrect password"]})
+    if(!isMatch) return res.status(400).json({message: ["Contraseña incorrecta"]})
 
     const user = await loginUser(email)
 
     user.id = uuidv4({ random: [...user.id] });
-
-
 
     const token = await createdAccessToken({
       id: user.id,
@@ -74,13 +71,10 @@ export const login = async (req, res) => {
     })
 
     res.cookie('token',token)
-    res.json({
-      message: "User correct"
-    })
+    res.status(200).json({message: "User correct"})
 
   }catch (err){
 
-    console.error("Error login verify:", err);
+    res.status(500).json({error:["Error login"]})
   }
-
 }
