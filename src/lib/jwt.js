@@ -12,12 +12,21 @@ export function createdAccessToken(payload){
                 expiresIn: "1d"
             },
             (err,token) =>{
-                if(err)reject(err)
+                if(err) reject(err)
 
                 resolve(token)
             }
         )
     })
-
-
 }
+
+export function verifyJWT(token) {
+    return new Promise((resolve, reject) => {
+      jwt.verify(token, process.env.TOKEN_SECRET, (err, user) => {
+        if (err) {
+          return reject(err);
+        }
+        resolve(user);
+      });
+    });
+  }

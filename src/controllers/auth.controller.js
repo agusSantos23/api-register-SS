@@ -1,8 +1,8 @@
 import { v4 as uuidv4 } from 'uuid';
 
-import { createUser, findUser, loginUser } from "../models/model.js";
+import { createUser, findUser, findUserId, loginUser } from "../models/model.js";
 import { hashPassword, verifyPassword } from "../lib/bcryptHash.js";
-import { createdAccessToken } from "../lib/jwt.js";
+import { createdAccessToken, verifyJWT } from "../lib/jwt.js";
 
 export const register = async (req, res) => {
   const {username, email, password} = req.body
@@ -77,4 +77,34 @@ export const login = async (req, res) => {
 
     res.status(500).json({error:["Error login"]})
   }
+}
+
+export const verifyToken = async (req, res) => {
+  try {
+    const {token} = req.cookies || {}
+
+    if(!token) return res.status(401).json({message: "Unauthorized"})
+  
+    const user = await verifyJWT(token)
+  
+    const userFound = await findUserId(user.email)
+  
+    if(!userFound) return res.status(401).json({message: "Unauthorized"})
+  
+    console.log(user);
+  
+    res.json({
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      picture: user.picture,
+      date: user.date,
+      appVisted: user.app_visted
+    })
+
+  } catch (error) {
+    res.status(500).json({message: "Error server, Unauthorized"})
+  }
+ 
+ 
 }
