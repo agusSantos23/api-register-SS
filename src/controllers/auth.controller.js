@@ -27,15 +27,13 @@ export const register = async (req, res) => {
         email: user.email,
         picture: user.picture,
         date: user.date,
-        appVisted: user.app_visted
+        app_visted: user.app_visted
       })
 
       res.cookie('token',token)
 
 
-      res.status(201).json({
-        message: "User create"
-      })
+      res.status(201).json(result)
     }else{
       res.status(400).json({message: ['User no create']})
     }
@@ -67,7 +65,7 @@ export const login = async (req, res) => {
       email: user.email,
       picture: user.picture,
       date: user.date,
-      appVisted: user.app_visted
+      app_visted: user.app_visted
     })
 
     res.cookie('token',token)
@@ -91,15 +89,13 @@ export const verifyToken = async (req, res) => {
   
     if(!userFound) return res.status(401).json({message: "Unauthorized"})
   
-    console.log(user);
-  
     res.json({
       id: user.id,
       username: user.username,
       email: user.email,
       picture: user.picture,
       date: user.date,
-      appVisted: user.app_visted
+      app_visted: user.app_visted
     })
 
   } catch (error) {

@@ -11,7 +11,7 @@ export const createUser = async (username, email, passwordHashed) =>{
         
         const today = new Date()
 
-        const app_visitadaSS = JSON.stringify({ register: true });
+        const app_visitadaSS = JSON.stringify(["Register"]);
 
         await connection.execute(
             `INSERT INTO users (id, username, email, password, picture, date, app_visted)
@@ -19,7 +19,8 @@ export const createUser = async (username, email, passwordHashed) =>{
             [uuid, username, email, passwordHashed, randomPicture, today, app_visitadaSS]
         );
           
-        return true;     
+        const [row] = await connection.execute("SELECT id, username, email, picture, date, app_visted FROM users WHERE email = ?", [email])
+        return row[0]
     } catch (error) {
 
         console.error(error);
