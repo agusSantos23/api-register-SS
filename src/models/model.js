@@ -36,7 +36,6 @@ export const loginUser = async email => {
 
     } catch (err) {
 
-        console.error("Error searching for user:", err);
         throw new Error("Error searching for user");
     }
 }
@@ -53,15 +52,21 @@ export const findUser = async email => {
     }
 }
 
-export const findUserId = async email => {
+
+
+export const updatePicture = async (email, num) =>{
+
     try {
-        const [row] = await connection.execute("SELECT id FROM users WHERE email = ?", [email])
-        if(row.length > 0) return row[0]
+
+        const [result] = await connection.execute("UPDATE users SET picture = ? WHERE email = ?",[num, email])
+        
+        if (result.affectedRows === 0) throw new Error("No user found with the given email");
+        
+        return result
+
     } catch (error) {
-        console.log(error);
-        throw new Error("Error searching for user")
+        throw new Error("Error update picture")
+
     }
-
 }
-
 
