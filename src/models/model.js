@@ -7,7 +7,7 @@ export const createUser = async (username, email, passwordHashed) =>{
         const [uuidResult] = await connection.execute('SELECT UUID() uuid;')
         const [{ uuid }] = uuidResult
 
-        const randomPicture = Math.floor(Math.random() * 5);
+        const randomPicture = Math.floor(Math.random() * 4);
         
         const today = new Date()
 
@@ -40,7 +40,6 @@ export const loginUser = async email => {
     }
 }
 
-
 export const findUser = async email => {
     
     try {
@@ -48,11 +47,11 @@ export const findUser = async email => {
         if(row.length > 0) return row[0]
         
     } catch (err) {
+        console.log(err);
+        
         throw new Error("Error searching for user")
     }
 }
-
-
 
 export const updatePicture = async (email, num) =>{
 
@@ -70,3 +69,28 @@ export const updatePicture = async (email, num) =>{
     }
 }
 
+export const updateProfile = async (emailUser, email, username, passwordHashed) =>{
+
+    try {
+        let resultEmail, resultUsername, resultPassword
+
+        if (email) {
+            [resultEmail] = await connection.execute("UPDATE users SET email = ? WHERE email = ?",[email, emailUser])
+        }
+        
+        if(username){
+            [resultUsername] = await connection.execute("UPDATE users SET username = ? WHERE email = ?",[username, emailUser])
+        }
+
+        if(passwordHashed){
+            [resultPassword] = await connection.execute("UPDATE users SET password = ? WHERE email = ?",[passwordHashed, emailUser])
+        }
+
+        return {resultEmail, resultUsername, resultPassword}
+
+    } catch (error) {
+        
+        console.log(error);
+        
+    }
+}

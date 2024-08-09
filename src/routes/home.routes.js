@@ -1,10 +1,12 @@
 import { Router } from "express";
-import { picture } from "../controllers/user.controller.js";
+import { picture, profile } from "../controllers/user.controller.js";
 
 
 const router = Router()
 
 
-router.post('/picture', picture)
+router.put('/picture', picture)
+
+router.patch('/updateProfile', profile)
 
 export default router

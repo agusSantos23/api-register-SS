@@ -79,6 +79,7 @@ export const login = async (req, res) => {
 }
 
 export const verifyToken = async (req, res) => {
+  
   try {
     const {token} = req.cookies || {}
 
@@ -93,6 +94,8 @@ export const verifyToken = async (req, res) => {
 
     userFound.id = uuidv4({ random: [...userFound.id] });
     
+    
+
     res.json({
       id: userFound.id,
       username: userFound.username,
@@ -103,9 +106,8 @@ export const verifyToken = async (req, res) => {
     })
 
   } catch (error) {
+
     console.log(error);
     res.status(500).json({message: "Error server, Unauthorized"})
   }
- 
- 
 }
