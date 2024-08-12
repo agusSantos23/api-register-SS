@@ -32,6 +32,8 @@ export const loginUser = async email => {
 
     try {
         const [row] = await connection.execute("SELECT id, username, email, picture, date, app_visted FROM users WHERE email = ?", [email])
+        console.log("Linea db:",row[0]);
+        
         return row[0]
 
     } catch (err) {
@@ -74,10 +76,6 @@ export const updateProfile = async (emailUser, email, username, passwordHashed) 
     try {
         let resultEmail, resultUsername, resultPassword
 
-        if (email) {
-            [resultEmail] = await connection.execute("UPDATE users SET email = ? WHERE email = ?",[email, emailUser])
-        }
-        
         if(username){
             [resultUsername] = await connection.execute("UPDATE users SET username = ? WHERE email = ?",[username, emailUser])
         }
@@ -85,6 +83,12 @@ export const updateProfile = async (emailUser, email, username, passwordHashed) 
         if(passwordHashed){
             [resultPassword] = await connection.execute("UPDATE users SET password = ? WHERE email = ?",[passwordHashed, emailUser])
         }
+        
+        if (email) {
+            [resultEmail] = await connection.execute("UPDATE users SET email = ? WHERE email = ?",[email, emailUser])
+        }
+        
+        
 
         return {resultEmail, resultUsername, resultPassword}
 

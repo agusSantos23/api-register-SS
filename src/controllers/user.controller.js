@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from 'uuid';
+
 import { hashPassword } from "../lib/bcryptHash.js";
 import { loginUser, updatePicture, updateProfile, findUser } from "../models/model.js";
 import { createdAccessToken } from "../lib/jwt.js";
@@ -19,7 +21,7 @@ export const picture = async (req, res) =>{
     }
 
   } catch (error) {
-    throw new error(error)
+    throw new error(error.message)
   }
 }
 
@@ -29,8 +31,8 @@ export const profile = async (req, res) =>{
   const { emailUser, dataUser } = req.body
 
   const {email, username, password} = dataUser
-
-
+  
+  
   try {
 
     let passwordHashed
@@ -46,7 +48,7 @@ export const profile = async (req, res) =>{
     }
     
     const result = await updateProfile(emailUser ,email, username, passwordHashed)
-
+    
     if(result){
 
       let response = {}
@@ -75,13 +77,16 @@ export const profile = async (req, res) =>{
         }
       }
       
-
+      
       if (result.resultEmail) {
         user = await loginUser(email)
       }else{
+        
         user = await loginUser(emailUser)
       }
-
+      
+      user.id = uuidv4({ random: [...user.id] });
+      
       
       const token = await createdAccessToken({
         id: user.id,
@@ -96,7 +101,7 @@ export const profile = async (req, res) =>{
     
       
       res.status(200).json(response)
-
+      
     }else{
 
       res.status(500).json({message: ["Error response update profile"]})
@@ -105,7 +110,7 @@ export const profile = async (req, res) =>{
     
   
   } catch (error) {
-    console.log(error);
+    throw new error(error.message)
     
   }
   
